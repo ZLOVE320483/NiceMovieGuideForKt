@@ -3,6 +3,7 @@ package com.zlove.movie.kotlin.network
 import com.zlove.movie.kotlin.BuildConfig
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +20,7 @@ import javax.inject.Singleton
 
     @Provides
     @Singleton
-    fun requestInterceptor(interceptor: RequestInterceptor): RequestInterceptor {
+    fun provideRequestInterceptor(interceptor: RequestInterceptor): Interceptor {
         return interceptor
     }
 
@@ -31,7 +32,7 @@ import javax.inject.Singleton
                 .addInterceptor(requestInterceptor)
 
         if (BuildConfig.DEBUG) {
-            val loggingInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
+            val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             builder.addInterceptor(loggingInterceptor)
         }
@@ -40,7 +41,7 @@ import javax.inject.Singleton
 
     @Provides
     @Singleton
-    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(BuildConfig.TMDB_BASE_URL)
                 .addConverterFactory(MoshiConverterFactory.create())
@@ -51,7 +52,7 @@ import javax.inject.Singleton
 
     @Provides
     @Singleton
-    fun tmdbWebService(retrofit: Retrofit): TmdbWebService {
+    fun provideTmdbWebService(retrofit: Retrofit): TmdbWebService {
         return retrofit.create(TmdbWebService::class.java)
     }
 

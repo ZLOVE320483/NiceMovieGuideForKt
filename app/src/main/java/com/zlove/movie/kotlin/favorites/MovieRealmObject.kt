@@ -4,8 +4,7 @@ import com.zlove.movie.kotlin.model.Movie
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-class MovieRealmObject : RealmObject {
-
+open class MovieRealmObject : RealmObject {
     @PrimaryKey
     var id: String? = null
 
@@ -26,7 +25,9 @@ class MovieRealmObject : RealmObject {
         voteAverage = movie.voteAverage
     }
 
+    constructor()
+
     companion object {
-       const val COLUMN_NAME_ID = "id"
+        const val COLUMN_NAME_ID = "id"
     }
 }
