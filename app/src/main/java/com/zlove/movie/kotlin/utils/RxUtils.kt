@@ -4,14 +4,16 @@ import io.reactivex.disposables.Disposable
 
 class RxUtils {
     companion object {
-        private fun unSubscribe(subscription: Disposable) {
-            if (!subscription.isDisposed)
+        private fun unSubscribe(subscription: Disposable?) {
+            if (subscription != null && !subscription.isDisposed)
                 subscription.dispose()
         }
 
-        fun unSubscribe(vararg subscriptions: Disposable) {
+        fun unSubscribe(vararg subscriptions: Disposable?) {
             for (subscription in subscriptions) {
-                unSubscribe(subscription)
+                if (subscription != null) {
+                    unSubscribe(subscription)
+                }
             }
         }
     }

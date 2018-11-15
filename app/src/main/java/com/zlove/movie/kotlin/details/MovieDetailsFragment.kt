@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.trailers_and_reviews.view.*
 import kotlinx.android.synthetic.main.video.view.*
 import javax.inject.Inject
 
-class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
+class MovieDetailsFragment: Fragment(), MovieDetailsView {
 
     @Inject lateinit var movieDetailsPresenter: MovieDetailsPresenter
     private var rootView: View? = null
@@ -89,7 +89,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
         rootView!!.movie_description.text = movie.overview
         movieDetailsPresenter.showTrailers(movie)
         movieDetailsPresenter.showReviews(movie)
-        rootView?.favorite?.setOnClickListener(this)
+        rootView?.favorite?.setOnClickListener{ onFavoriteClick() }
     }
 
     override fun showTrailers(trailers: List<Video>) {
@@ -114,7 +114,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
                 val thumbContainer = inflater.inflate(R.layout.video, rootView!!.trailers, false)
                 thumbContainer.video_thumb.setTag(R.id.glide_tag, Video.getUrl(trailer))
                 thumbContainer.video_thumb.requestLayout()
-                thumbContainer.video_thumb.setOnClickListener(this)
+                thumbContainer.video_thumb.setOnClickListener{ onThumbnailClick(thumbContainer.video_thumb) }
                 Glide.with(context!!)
                         .load(Video.getThumbnailUrl(trailer))
                         .apply(options)
@@ -138,7 +138,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
                 val reviewContainer = inflater.inflate(R.layout.review, rootView!!.reviews, false) as ViewGroup
                 reviewContainer.review_author.text = review.author
                 reviewContainer.review_content.text = review.content
-                reviewContainer.review_content.setOnClickListener(this)
+                reviewContainer.review_content.setOnClickListener{ onReviewClick(reviewContainer.review_content as TextView) }
                 rootView!!.reviews.addView(reviewContainer)
             }
         }
@@ -150,16 +150,6 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
 
     override fun showUnFavorited() {
         rootView?.favorite?.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_border_white_24dp))
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.video_thumb -> onThumbnailClick(v!!)
-
-            R.id.review_content -> onReviewClick(v as TextView)
-
-            R.id.favorite -> onFavoriteClick()
-        }
     }
 
     private fun onReviewClick(view: TextView) {

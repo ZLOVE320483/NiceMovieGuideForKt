@@ -57,7 +57,7 @@ class MoviesListingPresenterImpl(private val moviesListingInteractor: MoviesList
 
     override fun destroy() {
         this.view = null
-        RxUtils.unSubscribe(fetchSubscription!!, movieSearchSubscription!!)
+        RxUtils.unSubscribe(fetchSubscription, movieSearchSubscription)
     }
 
     private fun displayMovies() {
