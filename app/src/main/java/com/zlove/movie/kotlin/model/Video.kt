@@ -17,7 +17,7 @@ data class Video(val id: String,
                  val type: String): Parcelable {
 
     companion object {
-        private const val SITE_YOUTUBE: String = "SITE_YOUTUBE"
+        private const val SITE_YOUTUBE: String = "YouTube"
 
         fun getUrl(video: Video): String {
             if (SITE_YOUTUBE.equalsIgnoreCase(video.site))

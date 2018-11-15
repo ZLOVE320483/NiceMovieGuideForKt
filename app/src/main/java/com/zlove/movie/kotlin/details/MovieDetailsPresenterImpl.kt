@@ -41,7 +41,7 @@ class MovieDetailsPresenterImpl(private val movieDetailsInteractor: MovieDetails
 
     override fun showReviews(movie: Movie) {
         reviewSubscription = movieDetailsInteractor.getReviews(movie.id)
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({reviews -> onGetReviewsSuccess(reviews)}, { onGetReviewsFailure() })
     }

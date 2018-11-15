@@ -21,7 +21,6 @@ import com.zlove.movie.kotlin.model.Review
 import com.zlove.movie.kotlin.model.Video
 import kotlinx.android.synthetic.main.fragment_movie_details.view.*
 import kotlinx.android.synthetic.main.review.view.*
-import kotlinx.android.synthetic.main.trailers_and_reviews.*
 import kotlinx.android.synthetic.main.trailers_and_reviews.view.*
 import kotlinx.android.synthetic.main.video.view.*
 import javax.inject.Inject
@@ -90,6 +89,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
         rootView!!.movie_description.text = movie.overview
         movieDetailsPresenter.showTrailers(movie)
         movieDetailsPresenter.showReviews(movie)
+        rootView?.favorite?.setOnClickListener(this)
     }
 
     override fun showTrailers(trailers: List<Video>) {
@@ -103,7 +103,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
             rootView!!.trailers.visibility = View.VISIBLE
             rootView!!.trailers_container.visibility = View.VISIBLE
 
-            this.trailers.removeAllViews()
+            rootView!!.trailers.removeAllViews()
             val inflater = activity!!.layoutInflater
             val options = RequestOptions()
                     .placeholder(R.color.colorPrimary)
@@ -111,7 +111,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
                     .override(150, 150)
 
             for (trailer in trailers) {
-                val thumbContainer = inflater.inflate(R.layout.video, this.trailers, false)
+                val thumbContainer = inflater.inflate(R.layout.video, rootView!!.trailers, false)
                 thumbContainer.video_thumb.setTag(R.id.glide_tag, Video.getUrl(trailer))
                 thumbContainer.video_thumb.requestLayout()
                 thumbContainer.video_thumb.setOnClickListener(this)
@@ -119,7 +119,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
                         .load(Video.getThumbnailUrl(trailer))
                         .apply(options)
                         .into(thumbContainer.video_thumb)
-                this.trailers.addView(thumbContainer)
+                rootView!!.trailers.addView(thumbContainer)
             }
         }
     }
@@ -153,10 +153,10 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when (view?.id) {
-            R.id.video_thumb -> onThumbnailClick(view!!)
+        when (v?.id) {
+            R.id.video_thumb -> onThumbnailClick(v!!)
 
-            R.id.review_content -> onReviewClick(view as TextView)
+            R.id.review_content -> onReviewClick(v as TextView)
 
             R.id.favorite -> onFavoriteClick()
         }

@@ -35,13 +35,13 @@ class MoviesListingAdapter(private val movies: List<Movie>, val view: MoviesList
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context!!, movies[position])
+        holder.bind(context!!, movies[position], view)
     }
 
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(context: Context, movie: Movie) {
+        fun bind(context: Context, movie: Movie, view: MoviesListingView) {
             itemView.movie_name.text = movie.title
 
             val options = RequestOptions()
@@ -59,6 +59,10 @@ class MoviesListingAdapter(private val movies: List<Movie>, val view: MoviesList
                             Palette.from(bitmap).generate { palette -> setBackgroundColor(context, palette!!) }
                         }
                     })
+
+            itemView.setOnClickListener {
+                view.onMovieClicked(movie)
+            }
         }
 
         private fun setBackgroundColor(context: Context, palette: Palette) {
