@@ -17,7 +17,7 @@ interface TmdbWebService {
     fun highestRatedMovies(@Query("page") page: Int): Observable<MoviesWrapper>
 
     @GET("3/discover/movie?language=en&sort_by=elease_date.desc")
-    fun newestMovies(@Query("release_date.lte") maxReleaseDate: String, @Query("vote_count.gte") minVoteCount: Int): Observable<MoviesWrapper>
+    fun newestMovies(@Query("release_date.lte") maxReleaseDate: String?, @Query("vote_count.gte") minVoteCount: Int): Observable<MoviesWrapper>
 
     @GET("3/movie/{movieId}/videos")
     fun trailers(@Path("movieId") movieId: String): Observable<VideoWrapper>

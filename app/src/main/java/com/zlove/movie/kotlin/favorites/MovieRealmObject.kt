@@ -1,9 +1,11 @@
 package com.zlove.movie.kotlin.favorites
 
+import android.support.annotation.Keep
 import com.zlove.movie.kotlin.model.Movie
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
+@Keep
 open class MovieRealmObject : RealmObject {
     @PrimaryKey
     var id: String? = null

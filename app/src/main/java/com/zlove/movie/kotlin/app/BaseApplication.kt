@@ -12,9 +12,9 @@ import io.realm.Realm
 
 class BaseApplication: Application() {
 
-    private var appComponent: AppComponent? = null
-    private var detailsComponent: DetailsComponent? = null
-    private var listingComponent: ListingComponent? = null
+    private lateinit var appComponent: AppComponent
+    private lateinit var detailsComponent: DetailsComponent
+    private lateinit var listingComponent: ListingComponent
 
     override fun onCreate() {
         super.onCreate()
@@ -37,24 +37,24 @@ class BaseApplication: Application() {
 
 
     fun createDetailsComponent(): DetailsComponent {
-        detailsComponent = appComponent!!.plus(DetailsModule())
-        return detailsComponent!!
+        detailsComponent = appComponent.plus(DetailsModule())
+        return detailsComponent
     }
 
     fun releaseDetailsComponent() {
-        detailsComponent = null
+
     }
 
     fun createListingComponent(): ListingComponent {
-        listingComponent = appComponent!!.plus(ListingModule())
-        return listingComponent!!
+        listingComponent = appComponent.plus(ListingModule())
+        return listingComponent
     }
 
     fun releaseListingComponent() {
-        listingComponent = null
+
     }
 
     fun getListingComponent(): ListingComponent {
-        return listingComponent!!
+        return listingComponent
     }
 }

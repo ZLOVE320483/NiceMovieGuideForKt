@@ -24,15 +24,15 @@ import javax.inject.Inject
 class MoviesListingFragment: Fragment(), MoviesListingView {
 
     @Inject lateinit var moviesListingPresenter: MoviesListingPresenter
-    private var callback: Callback? = null
-    private var rootView: View? = null
+    private lateinit var callback: Callback
+    private lateinit var rootView: View
 
-    private var adapter: RecyclerView.Adapter<*>? = null
-    private var movies: MutableList<Movie>? = ArrayList(20)
+    private lateinit var adapter: RecyclerView.Adapter<*>
+    private var movies: MutableList<Movie> = ArrayList(20)
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        callback = context as Callback?
+        callback = context as Callback
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class MoviesListingFragment: Fragment(), MoviesListingView {
         rootView = inflater.inflate(R.layout.fragment_movies, container, false)
         initLayoutReferences()
 
-        rootView!!.movies_listing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rootView.movies_listing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
@@ -62,15 +62,15 @@ class MoviesListingFragment: Fragment(), MoviesListingView {
         moviesListingPresenter.setView(this)
         if (savedInstanceState != null) {
             movies = savedInstanceState.getParcelableArrayList(Constants.MOVIE)
-            adapter!!.notifyDataSetChanged()
-            rootView!!.movies_listing.visibility = View.VISIBLE
+            adapter.notifyDataSetChanged()
+            rootView.movies_listing.visibility = View.VISIBLE
         } else {
             moviesListingPresenter.firstPage()
         }
     }
 
     private fun initLayoutReferences() {
-        rootView!!.movies_listing.setHasFixedSize(true)
+        rootView.movies_listing.setHasFixedSize(true)
         val columns: Int
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             columns = 2
@@ -79,14 +79,14 @@ class MoviesListingFragment: Fragment(), MoviesListingView {
         }
         val layoutManager = GridLayoutManager(activity, columns)
 
-        rootView!!.movies_listing.layoutManager = layoutManager
-        adapter = MoviesListingAdapter(movies!!, this)
-        rootView!!.movies_listing.adapter = adapter
+        rootView.movies_listing.layoutManager = layoutManager
+        adapter = MoviesListingAdapter(movies, this)
+        rootView.movies_listing.adapter = adapter
 
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             R.id.action_sort -> {
                 moviesListingPresenter.firstPage()
                 displaySortingOptions()
@@ -97,37 +97,32 @@ class MoviesListingFragment: Fragment(), MoviesListingView {
 
     private fun displaySortingOptions() {
         val sortingDialogFragment = SortingDialogFragment.newInstance(moviesListingPresenter)
-        sortingDialogFragment.show(fragmentManager!!, "Select Quantity")
+        sortingDialogFragment.show(fragmentManager, "Select Quantity")
     }
 
     override fun showMovies(movies: List<Movie>) {
-        this.movies!!.clear()
-        this.movies!!.addAll(movies)
-        rootView!!.movies_listing.visibility = View.VISIBLE
-        adapter!!.notifyDataSetChanged()
-        callback!!.onMoviesLoaded(movies[0])
+        this.movies.clear()
+        this.movies.addAll(movies)
+        rootView.movies_listing.visibility = View.VISIBLE
+        adapter.notifyDataSetChanged()
+        callback.onMoviesLoaded(movies[0])
     }
 
     override fun loadingStarted() {
-        Snackbar.make(rootView!!.movies_listing, R.string.loading_movies, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(rootView.movies_listing, R.string.loading_movies, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun loadingFailed(errorMessage: String) {
-        Snackbar.make(rootView!!.movies_listing, errorMessage, Snackbar.LENGTH_INDEFINITE).show()
+        Snackbar.make(rootView.movies_listing, errorMessage, Snackbar.LENGTH_INDEFINITE).show()
     }
 
     override fun onMovieClicked(movie: Movie) {
-        callback!!.onMovieClicked(movie)
+        callback.onMovieClicked(movie)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         moviesListingPresenter.destroy()
-    }
-
-    override fun onDetach() {
-        callback = null
-        super.onDetach()
     }
 
     override fun onDestroy() {

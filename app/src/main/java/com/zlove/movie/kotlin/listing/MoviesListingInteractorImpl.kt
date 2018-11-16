@@ -35,7 +35,7 @@ class MoviesListingInteractorImpl(private val favoritesInteractor: FavoritesInte
             SortType.HIGHEST_RATED.type -> return tmdbWebService.highestRatedMovies(page).map { moviesWrapper -> moviesWrapper.movies }
             SortType.NEWEST.type -> {
                 val cal = Calendar.getInstance()
-                val maxReleaseDate = dateFormat!!.format(cal.time)
+                val maxReleaseDate = dateFormat?.format(cal.time)
                 return tmdbWebService.newestMovies(maxReleaseDate, NEWEST_MIN_VOTE_COUNT).map { moviesWrapper -> moviesWrapper.movies }
             }
             else -> return Observable.just(favoritesInteractor.getFavorites())

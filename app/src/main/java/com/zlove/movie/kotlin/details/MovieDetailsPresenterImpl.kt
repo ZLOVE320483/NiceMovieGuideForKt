@@ -12,17 +12,13 @@ import io.reactivex.schedulers.Schedulers
 class MovieDetailsPresenterImpl(private val movieDetailsInteractor: MovieDetailsInteractor,
                                 private val favoritesInteractor: FavoritesInteractor): MovieDetailsPresenter {
 
-    private var view: MovieDetailsView? = null
-    private var trailerSubscription: Disposable? = null
-    private var reviewSubscription: Disposable? = null
-
-    private fun isViewAttached(): Boolean {
-        return view != null
-    }
+    private lateinit var view: MovieDetailsView
+    private lateinit var trailerSubscription: Disposable
+    private lateinit var reviewSubscription: Disposable
 
     override fun showDetails(movie: Movie) {
-        if (isViewAttached())
-            view!!.showDetails(movie)
+        view.showDetails(movie)
+
     }
 
     override fun showTrailers(movie: Movie) {
@@ -33,8 +29,7 @@ class MovieDetailsPresenterImpl(private val movieDetailsInteractor: MovieDetails
     }
 
     private fun onGetTrailersSuccess(videos: List<Video>) {
-        if (isViewAttached())
-            view!!.showTrailers(videos)
+        view.showTrailers(videos)
     }
 
     private fun onGetTrailersFailure() {}
@@ -47,34 +42,26 @@ class MovieDetailsPresenterImpl(private val movieDetailsInteractor: MovieDetails
     }
 
     private fun onGetReviewsSuccess(reviews: List<Review>) {
-        if (isViewAttached())
-            view!!.showReviews(reviews)
+        view.showReviews(reviews)
     }
 
     private fun onGetReviewsFailure() {}
 
     override fun showFavoriteButton(movie: Movie) {
-        val isFavorite = favoritesInteractor.isFavorite(movie.id)
-        if (isViewAttached()) {
-            if (isFavorite) {
-                view!!.showFavorited()
-            } else {
-                view!!.showUnFavorited()
-            }
-        }
+        if (favoritesInteractor.isFavorite(movie.id))
+            view.showFavorited()
+        else
+            view.showUnFavorited()
     }
 
     override fun onFavoriteClick(movie: Movie) {
-        if (isViewAttached()) {
-            val isFavorite = favoritesInteractor.isFavorite(movie.id)
-            if (isFavorite) {
+            if (favoritesInteractor.isFavorite(movie.id)) {
                 favoritesInteractor.unFavorite(movie.id)
-                view!!.showUnFavorited()
+                view.showUnFavorited()
             } else {
                 favoritesInteractor.setFavorite(movie)
-                view!!.showFavorited()
+                view.showFavorited()
             }
-        }
     }
 
     override fun setView(view: MovieDetailsView) {
@@ -82,7 +69,16 @@ class MovieDetailsPresenterImpl(private val movieDetailsInteractor: MovieDetails
     }
 
     override fun destroy() {
-        this.view = null
-        RxUtils.unSubscribe(trailerSubscription!!, reviewSubscription!!)
+        ifNotNull(trailerSubscription, reviewSubscription) {
+            trailerSubscription, reviewSubscription ->
+                RxUtils.unSubscribe(trailerSubscription, reviewSubscription)
+        }
     }
+
+    private fun <T1, T2> ifNotNull(value1: T1?, value2: T2?, bothNotNull: (T1, T2) -> (Unit)) {
+        if (value1 != null && value2 != null) {
+            bothNotNull(value1, value2)
+        }
+    }
+
 }

@@ -28,7 +28,7 @@ import javax.inject.Inject
 class MovieDetailsFragment: Fragment(), MovieDetailsView {
 
     @Inject lateinit var movieDetailsPresenter: MovieDetailsPresenter
-    private var rootView: View? = null
+    private lateinit var rootView: View
     private var movie: Movie? = null
 
     companion object {
@@ -65,14 +65,14 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView {
     }
 
     private fun setToolbar() {
-        rootView!!.collapsing_toolbar.setContentScrimColor(ContextCompat.getColor(context!!, R.color.colorPrimary))
-        rootView!!.collapsing_toolbar.title = getString(R.string.movie_details)
-        rootView!!.collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedToolbar)
-        rootView!!.collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedToolbar)
-        rootView!!.collapsing_toolbar.setTitleEnabled(true)
+        rootView.collapsing_toolbar.setContentScrimColor(ContextCompat.getColor(context!!, R.color.colorPrimary))
+        rootView.collapsing_toolbar.title = getString(R.string.movie_details)
+        rootView.collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedToolbar)
+        rootView.collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedToolbar)
+        rootView.collapsing_toolbar.setTitleEnabled(true)
 
-        if (rootView!!.toolbar != null) {
-            (activity as AppCompatActivity).setSupportActionBar(rootView!!.toolbar)
+        if (rootView.toolbar != null) {
+            (activity as AppCompatActivity).setSupportActionBar(rootView.toolbar)
 
             val actionBar = (activity as AppCompatActivity).supportActionBar
             actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -82,28 +82,28 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView {
     }
 
     override fun showDetails(movie: Movie) {
-        Glide.with(context!!).load(Api.getBackdropPath(movie.backdropPath)).into(rootView!!.movie_poster)
-        rootView!!.movie_name.text = movie.title
-        rootView!!.movie_year.text = String.format(getString(R.string.release_date), movie.releaseDate)
-        rootView!!.movie_rating.text = String.format(getString(R.string.rating), movie.voteAverage.toString())
-        rootView!!.movie_description.text = movie.overview
+        Glide.with(context!!).load(Api.getBackdropPath(movie.backdropPath)).into(rootView.movie_poster)
+        rootView.movie_name.text = movie.title
+        rootView.movie_year.text = String.format(getString(R.string.release_date), movie.releaseDate)
+        rootView.movie_rating.text = String.format(getString(R.string.rating), movie.voteAverage.toString())
+        rootView.movie_description.text = movie.overview
         movieDetailsPresenter.showTrailers(movie)
         movieDetailsPresenter.showReviews(movie)
-        rootView?.favorite?.setOnClickListener{ onFavoriteClick() }
+        rootView.favorite.setOnClickListener{ onFavoriteClick() }
     }
 
     override fun showTrailers(trailers: List<Video>) {
         if (trailers.isEmpty()) {
-            rootView!!.trailers_label.visibility = View.GONE
-            rootView!!.trailers.visibility = View.GONE
-            rootView!!.trailers_container.visibility = View.GONE
+            rootView.trailers_label.visibility = View.GONE
+            rootView.trailers.visibility = View.GONE
+            rootView.trailers_container.visibility = View.GONE
 
         } else {
-            rootView!!.trailers_label.visibility = View.VISIBLE
-            rootView!!.trailers.visibility = View.VISIBLE
-            rootView!!.trailers_container.visibility = View.VISIBLE
+            rootView.trailers_label.visibility = View.VISIBLE
+            rootView.trailers.visibility = View.VISIBLE
+            rootView.trailers_container.visibility = View.VISIBLE
 
-            rootView!!.trailers.removeAllViews()
+            rootView.trailers.removeAllViews()
             val inflater = activity!!.layoutInflater
             val options = RequestOptions()
                     .placeholder(R.color.colorPrimary)
@@ -111,7 +111,7 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView {
                     .override(150, 150)
 
             for (trailer in trailers) {
-                val thumbContainer = inflater.inflate(R.layout.video, rootView!!.trailers, false)
+                val thumbContainer = inflater.inflate(R.layout.video, rootView.trailers, false)
                 thumbContainer.video_thumb.setTag(R.id.glide_tag, Video.getUrl(trailer))
                 thumbContainer.video_thumb.requestLayout()
                 thumbContainer.video_thumb.setOnClickListener{ onThumbnailClick(thumbContainer.video_thumb) }
@@ -119,37 +119,37 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView {
                         .load(Video.getThumbnailUrl(trailer))
                         .apply(options)
                         .into(thumbContainer.video_thumb)
-                rootView!!.trailers.addView(thumbContainer)
+                rootView.trailers.addView(thumbContainer)
             }
         }
     }
 
     override fun showReviews(reviews: List<Review>) {
         if (reviews.isEmpty()) {
-            rootView!!.reviews_label.visibility = View.GONE
-            rootView!!.reviews.visibility = View.GONE
+            rootView.reviews_label.visibility = View.GONE
+            rootView.reviews.visibility = View.GONE
         } else {
-            rootView!!.reviews_label.visibility = View.VISIBLE
-            rootView!!.reviews.visibility = View.VISIBLE
+            rootView.reviews_label.visibility = View.VISIBLE
+            rootView.reviews.visibility = View.VISIBLE
 
-            rootView!!.reviews.removeAllViews()
+            rootView.reviews.removeAllViews()
             val inflater = activity!!.layoutInflater
             for (review in reviews) {
-                val reviewContainer = inflater.inflate(R.layout.review, rootView!!.reviews, false) as ViewGroup
+                val reviewContainer = inflater.inflate(R.layout.review, rootView.reviews, false) as ViewGroup
                 reviewContainer.review_author.text = review.author
                 reviewContainer.review_content.text = review.content
                 reviewContainer.review_content.setOnClickListener{ onReviewClick(reviewContainer.review_content as TextView) }
-                rootView!!.reviews.addView(reviewContainer)
+                rootView.reviews.addView(reviewContainer)
             }
         }
     }
 
     override fun showFavorited() {
-        rootView?.favorite?.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_white_24dp))
+        rootView.favorite.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_white_24dp))
     }
 
     override fun showUnFavorited() {
-        rootView?.favorite?.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_border_white_24dp))
+        rootView.favorite.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_border_white_24dp))
     }
 
     private fun onReviewClick(view: TextView) {
@@ -167,7 +167,9 @@ class MovieDetailsFragment: Fragment(), MovieDetailsView {
     }
 
     private fun onFavoriteClick() {
-        movieDetailsPresenter.onFavoriteClick(movie!!)
+        movie?.let {
+            movieDetailsPresenter.onFavoriteClick(it)
+        }
     }
 
     override fun onDestroyView() {

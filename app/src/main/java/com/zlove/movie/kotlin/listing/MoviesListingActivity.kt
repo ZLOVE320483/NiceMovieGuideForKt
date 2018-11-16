@@ -25,7 +25,7 @@ class MoviesListingActivity: AppCompatActivity(), MoviesListingFragment.Callback
     }
 
     private var twoPaneMode: Boolean = false
-    private var searchViewTextSubscription: Disposable? = null
+    private lateinit var searchViewTextSubscription: Disposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +46,8 @@ class MoviesListingActivity: AppCompatActivity(), MoviesListingFragment.Callback
 
     private fun setToolbar() {
         setSupportActionBar(toolbar)
-
-        if (supportActionBar != null) {
-            supportActionBar!!.setTitle(R.string.movie_guide)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-        }
+        supportActionBar?.setTitle(R.string.movie_guide)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,7 +62,7 @@ class MoviesListingActivity: AppCompatActivity(), MoviesListingFragment.Callback
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 val mlFragment = supportFragmentManager.findFragmentById(R.id.fragment_listing) as MoviesListingFragment?
-                mlFragment!!.searchViewBackButtonClicked()
+                mlFragment?.searchViewBackButtonClicked()
                 return true
             }
         })
@@ -74,7 +71,7 @@ class MoviesListingActivity: AppCompatActivity(), MoviesListingFragment.Callback
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .subscribe { charSequence ->
                     if (charSequence.isNotEmpty()) {
-                        mlFragment!!.searchViewClicked(charSequence.toString())
+                        mlFragment?.searchViewClicked(charSequence.toString())
                     }
                 }
         return true
@@ -112,7 +109,7 @@ class MoviesListingActivity: AppCompatActivity(), MoviesListingFragment.Callback
     }
 
     override fun onDestroy() {
-        RxUtils.unSubscribe(searchViewTextSubscription!!)
+        RxUtils.unSubscribe(searchViewTextSubscription)
         super.onDestroy()
     }
 }

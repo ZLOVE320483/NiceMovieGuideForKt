@@ -9,7 +9,7 @@ import io.reactivex.schedulers.Schedulers
 
 class MoviesListingPresenterImpl(private val moviesListingInteractor: MoviesListingInteractor): MoviesListingPresenter {
 
-    private var view: MoviesListingView? = null
+    private lateinit var view: MoviesListingView
     private var fetchSubscription: Disposable? = null
     private var movieSearchSubscription: Disposable? = null
     private var currentPage = 1
@@ -56,8 +56,13 @@ class MoviesListingPresenterImpl(private val moviesListingInteractor: MoviesList
     }
 
     override fun destroy() {
-        this.view = null
-        RxUtils.unSubscribe(fetchSubscription, movieSearchSubscription)
+        fetchSubscription?.let {
+            RxUtils.unSubscribe(it)
+        }
+
+        movieSearchSubscription.let {
+            RxUtils.unSubscribe(it)
+        }
     }
 
     private fun displayMovies() {
@@ -78,9 +83,7 @@ class MoviesListingPresenterImpl(private val moviesListingInteractor: MoviesList
     }
 
     private fun showLoading() {
-        if (isViewAttached()) {
-            view!!.loadingStarted()
-        }
+            view.loadingStarted()
     }
 
     private fun onMovieFetchSuccess(movies: List<Movie>) {
@@ -89,30 +92,20 @@ class MoviesListingPresenterImpl(private val moviesListingInteractor: MoviesList
         } else {
             loadedMovies = java.util.ArrayList(movies)
         }
-        if (isViewAttached()) {
-            view!!.showMovies(loadedMovies)
-        }
+            view.showMovies(loadedMovies)
     }
 
     private fun onMovieFetchFailed(e: Throwable) {
-        if (isViewAttached()) {
-            view!!.loadingFailed(e.message!!)
-        }
+            view.loadingFailed(e.message!!)
     }
 
     private fun onMovieSearchSuccess(movies: List<Movie>) {
         loadedMovies.clear()
         loadedMovies = ArrayList(movies)
-        if (isViewAttached())
-            view!!.showMovies(loadedMovies)
+            view.showMovies(loadedMovies)
     }
 
     private fun onMovieSearchFailed(e: Throwable) {
-        if (isViewAttached())
-            view!!.loadingFailed(e.message!!)
-    }
-
-    private fun isViewAttached(): Boolean {
-        return this.view != null
+            view.loadingFailed(e.message!!)
     }
 }
