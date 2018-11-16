@@ -33,6 +33,6 @@
  [Kotlin 扩展函数详解与应用](https://blog.csdn.net/ComWill/article/details/77206508)
  
  ####项目截图
- ![列表页](https://github.com/ZLOVE320483/Notification/blob/master/img/progress.png)
+ ![列表页](https://github.com/ZLOVE320483/NiceMovieGuideForKt/blob/master/img/device-2018-11-16-185727.png)
  
- ![详情页](https://github.com/ZLOVE320483/Notification/blob/master/img/progress.png)
+ ![详情页](https://github.com/ZLOVE320483/NiceMovieGuideForKt/blob/master/img/device-2018-11-16-185748.png)
