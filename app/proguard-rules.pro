@@ -19,6 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
 -keep public class com.zlove.movie.kotlin.model.**{*;}
 
 -keep class android.support.annotation.Keep
@@ -48,8 +49,10 @@
 -keep public class * extends android.support.annotation.**
 -keep public class * extends android.support.v7.**
 
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
+# Retrofit
+-dontnote retrofit2.Platform
+-dontnote retrofit2.Platform$IOS$MainThreadExecutor
+-dontwarn retrofit2.Platform$Java8
 -keepattributes Signature
 -keepattributes Exceptions
 
@@ -62,10 +65,15 @@
 #过滤okhttp
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
+-keep class okhttp3.internal.**{*;}
 -dontwarn okio.**
 
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.internal.Keep
+-keep @io.realm.internal.Keep class * { *; }
+-dontwarn javax.**
 -dontwarn io.realm.**
--keep class io.realm.** { *; }
 
 # 保留枚举 enum 类不被混淆
 -keepclassmembers enum * {
@@ -90,6 +98,19 @@
     private void readObject(java.io.ObjectInputStream);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
+}
+
+# RxJava RxAndroid
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
 # 不混淆资源类
